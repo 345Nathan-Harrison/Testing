@@ -27,7 +27,7 @@
         "identity": {
           "type": "UserAssigned",
           "userAssignedIdentities": {
-            "<imgBuilderId>": {}
+            "/subscriptions/11af7924-8349-4e1b-a691-d374856ceb57/resourcegroups/aib-testing-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity1721294525": {}
           }
         },
         "properties": {
@@ -40,7 +40,7 @@
             "type": "PlatformImage",
             "publisher": "MicrosoftWindowsDesktop",
             "offer": "Windows-10",
-            "sku": "20h1-evd",
+            "sku": "20h2-evd",
             "version": "latest"
           },
           "customize": [
@@ -71,6 +71,18 @@
       }
     ]
   }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -48,7 +48,20 @@ $identityNameResourceID = (Get-AzUserAssignedIdentity -ResourceGroupName $imageR
 ((Get-Content -path $templateFilePath -Raw) -replace '<region>', $location) | Set-Content -path $templateFilePath
 ((Get-Content -path $templateFilePath -Raw) -replace '<runOutputName>', $runOutputName) | Set-Content -path $templateFilePath
 ((Get-Content -path $templateFilePath -Raw) -replace '<imageName>', $imageName) | Set-Content -Path $templateFilePath
-((Get-Content -path $templateFilePath -Raw) -replace '<identityNameResourceId>', $identityNameResourceID) | Set-Content -Path $templateFilePath
+((Get-Content -path $templateFilePath -Raw) -replace '<imgBuilderId>', $identityNameResourceID) | Set-Content -Path $templateFilePath
+
+
+
+
+
+# run the deployment
+New-AzResourceGroupDeployment -ResourceGroupName $imageResourceGroup -TemplateFile $templateFilePath -api-version "2024-02-01" -imageTemplateName $imageTemplateName -svclocation $location
+
+
+
+
+
+
 
 
 
@@ -63,7 +76,7 @@ Get-AzImageOffer -Location $location -PublisherName $pubName | ft Offer, Publish
 # $offerName = 'office-365'
 $offerName = 'Windows-10'
 Get-AzVMImageSku -Location $location -PublisherName $pubName -Offer $offerName | ft Skus, Offer, PublisherName, Location
-$skuName = '20h1-evd'
+$skuName = '20h2-evd'
 Get-AzVMImage -Location $location -PublisherName $pubName -Skus $skuName -Offer $offerName
 $version = '19041.572.2010091946'
 Get-AzVMImage -Location $location -PublisherName $pubName -Offer $offerName -Skus $skuName -Version $version

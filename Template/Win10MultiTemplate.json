@@ -58,9 +58,9 @@
           "distribute": [
             {
               "type": "ManagedImage",
-              "imageId": "/subscriptions/<subscriptionID>/resourceGroups/<rgName>/providers/Microsoft.Compute/images/<imageName>",
-              "location": "<region>",
-              "runOutputName": "<runOutputName>",
+              "imageId": "/subscriptions/11af7924-8349-4e1b-a691-d374856ceb57/resourceGroups/aib-testing-rg/providers/Microsoft.Compute/images/aibCustomImageWin10",
+              "location": "uksouth",
+              "runOutputName": "Win10Client",
               "artifactTags": {
                 "source": "azVmImageBuilder",
                 "baseosimg": "windows10Multi"
@@ -71,3 +71,8 @@
       }
     ]
   }
+
+
+
+
+

@@ -57,11 +57,24 @@ $identityNameResourceID = (Get-AzUserAssignedIdentity -ResourceGroupName $imageR
 # run the deployment
 New-AzResourceGroupDeployment -ResourceGroupName $imageResourceGroup -TemplateFile $templateFilePath -api-version "2024-02-01" -imageTemplateName $imageTemplateName -svclocation $location
 
+# verify the deployment
+Get-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup | Select-Object -Property Name, LastRunStatusRunState, LastRunStatusMessage, ProvisioningState, ProvisioningErrorMessage
 
+# Start the Image Build Process
+Start-AzImageBuilderTemplate -ResourceGroupName $imageResourceGroup -ImageTemplateName $imageTemplateName
 
+# create a vm to test
 
-
-
+##Errors here - to be looked at Friday
+$template = Get-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup
+$ArtifactId = $template.LastRunOutput.Name
+if (-not [string]::IsNullOrWhiteSpace($ArtifactId)) {
+    New-AzVM -ResourceGroupName $imageResourceGroup -Image $ArtifactId -Name win10TestVM01 -Credential $Cred -Size Standard_D2_v2
+} else {
+    Write-Error "ArtifactId is null or empty."
+}
+$Cred = Get-Credential
+New-AzVM -ResourceGroupName $imageResourceGroup -Image $ArtifactId  -Name win10TestVM01 -Credential $Cred -Size Standard_D2_v2
 
 
 

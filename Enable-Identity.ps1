@@ -25,8 +25,6 @@ New-AzUserAssignedIdentity -ResourceGroupName $imageResourceGroup -Name $identit
 # Assign the identity resource and principle ID's to a variable
 $identityNamePrincipalID = (Get-AzUserAssignedIdentity -ResourceGroupName $imageResourceGroup -Name $identityName).PrincipalId
 
-
-
 # Create the role definition
 New-AzRoleDefinition -InputFile $myRoleImageCreationPath
 

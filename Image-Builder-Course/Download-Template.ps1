@@ -14,9 +14,7 @@ if ((test-path .\Template\$Win10FileName) -eq $true) {
     if ($confirmation -eq "Y" -or $confirmation -eq "y"){
         Invoke-WebRequest -Uri $Win10Url -OutFile ".\Template\$Win10FileName" -UseBasicParsing
     } 
-}
-
-else {
+} else {
     Invoke-WebRequest -Uri $Win10Url -OutFile ".\Template\$Win10FileName" -UseBasicParsing
 }
 
@@ -63,18 +61,58 @@ Get-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupN
 # Start the Image Build Process
 Start-AzImageBuilderTemplate -ResourceGroupName $imageResourceGroup -ImageTemplateName $imageTemplateName
 
-# create a vm to test
 
-##Errors here - to be looked at Friday
-$template = Get-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup
-$ArtifactId = $template.LastRunOutput.Name
-if (-not [string]::IsNullOrWhiteSpace($ArtifactId)) {
-    New-AzVM -ResourceGroupName $imageResourceGroup -Image $ArtifactId -Name win10TestVM01 -Credential $Cred -Size Standard_D2_v2
-} else {
-    Write-Error "ArtifactId is null or empty."
-}
+
+
+
+
+# # create a vm to test
+# # the below code will be replaced with Dev Box code instead of VM
+
+# ##Errors here - to be looked at Friday
+# # Get credentials at the start
+# $Cred = Get-Credential
+
+# # Retrieve the template and artifact ID
+# $template = Get-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup
+# $ArtifactId = $template.Name
+
+# # Get the custom image object
+# $image = Get-AzImage -ImageName $ArtifactId -ResourceGroupName $imageResourceGroup
+
+# # Specify the VM configuration
+# $vmName = "aibTestVM"
+# $vmLocation = $image.Location
+# $vmSize = "Standard_D2s_v3"
+
+# New-AzVM -ResourceGroupName $imageResourceGroup -Name $vmName -Location $vmLocation -Image $image -Size $vmSize -Credential $Cred
+
+
+# CREATE A DEV BOX
+
 $Cred = Get-Credential
-New-AzVM -ResourceGroupName $imageResourceGroup -Image $ArtifactId  -Name win10TestVM01 -Credential $Cred -Size Standard_D2_v2
+
+# Retrieve the template and artifact ID
+$template = Get-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup
+$ArtifactId = $template.Name
+
+# Get the custom image object
+$image = Get-AzImage -ImageName $ArtifactId -ResourceGroupName $imageResourceGroup
+
+# Specify the dev box defintion configuration
+$devBoxDefinitionName = "aibDevBoxDefinition"
+$galleryImageId = $image.Id
+$devBoxSize = "Standard_D2s_v3" 
+
+# Create the dev box definition with the custom image
+New-AzDevBoxDefinition -Name $devBoxDefinitionName -DevCenterName "devcenter-testing" -ProjectName "testing-project" -GalleryImageId $galleryImageId -Sku $devBoxSize -Credential $Cred
+
+
+
+
+
+
+
 
 
 

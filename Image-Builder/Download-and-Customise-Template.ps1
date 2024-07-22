@@ -16,8 +16,9 @@ if ((Test-Path -Path "C:\dev\Dev Box\Testing\Image-Builder\Template\$jsonFileNam
 
 # GET SUBSCRIPTION ID
 $subscriptionID = (Get-AzContext).Subscription.Id
+Write-Host "Subscription ID: $subscriptionID"
 
-# DEFINE THE REGION
+# DEFINE THE LOCATION
 $location = Read-Host "Enter the location for the image template"
 Write-Output "Location: $location"
 
@@ -28,6 +29,7 @@ Write-Output "Resource Group Name: $resourceGroupName"
 # create resource group in azure
 $resourceGroup = New-AzResourceGroup -Name $resourceGroupName -Location $location
 Write-Output "Resource Group '$resourceGroupName' created successfully."
+
 
 # DEFINE THE OS DISK SIZE (256, 512, 1024)
 do {
@@ -73,15 +75,20 @@ Write-Output "Run Output Name: $runOutputName"
 
 # UPDATE THE TEMPLATE
 $jsonFilePath = "C:\dev\Dev Box\Testing\Image-Builder\Template\$jsonFileName"
-((Get-Content -path $templateFilePath -Raw) -replace '<SUBSCRIPTIONID>', $subscriptionID) | Set-Content -path $templateFilePath
-((Get-Content -path $templateFilePath -Raw) -replace '<RESOURCEGROUPNAME>', $resourceGroupName) | Set-Content -path $templateFilePath
-((Get-Content -path $templateFilePath -Raw) -replace '<LOCATION>', $location) | Set-Content -path $templateFilePath
-((Get-Content -path $templateFilePath -Raw) -replace '<OSDISKSIZE>', $osDiskSize) | Set-Content -path $templateFilePath
-((Get-Content -path $templateFilePath -Raw) -replace '<VMSIZE>', $vmSize) | Set-Content -path $templateFilePath
-((Get-Content -path $templateFilePath -Raw) -replace '<SKU>', $sku) | Set-Content -path $templateFilePath
-((Get-Content -path $templateFilePath -Raw) -replace '<IMAGENAME>', $imageName) | Set-Content -Path $templateFilePath
-((Get-Content -path $templateFilePath -Raw) -replace '<IMAGETEMPLATENAME>', $imageTemplateName) | Set-Content -Path $templateFilePath
-((Get-Content -path $templateFilePath -Raw) -replace '<RUNOUTPUTNAME>', $runOutputName) | Set-Content -Path $templateFilePath
+((Get-Content -path $jsonFilePath -Raw) -replace '<SUBSCRIPTIONID>', $subscriptionID) | Set-Content -path $jsonFilePath
+((Get-Content -path $jsonFilePath -Raw) -replace '<RESOURCEGROUPNAME>', $resourceGroupName) | Set-Content -path $jsonFilePath
+((Get-Content -path $jsonFilePath -Raw) -replace '<LOCATION>', $location) | Set-Content -path $jsonFilePath
+((Get-Content -path $jsonFilePath -Raw) -replace '<OSDISKSIZEGB>', $osDiskSize) | Set-Content -path $jsonFilePath
+((Get-Content -path $jsonFilePath -Raw) -replace '<VMSIZE>', $vmSize) | Set-Content -path $jsonFilePath
+((Get-Content -path $jsonFilePath -Raw) -replace '<SKU>', $sku) | Set-Content -path $jsonFilePath
+((Get-Content -path $jsonFilePath -Raw) -replace '<IMAGENAME>', $imageName) | Set-Content -Path $jsonFilePath
+((Get-Content -path $jsonFilePath -Raw) -replace '<IMAGETEMPLATENAME>', $imageTemplateName) | Set-Content -Path $jsonFilePath
+((Get-Content -path $jsonFilePath -Raw) -replace '<RUNOUTPUTNAME>', $runOutputName) | Set-Content -Path $jsonFilePath
+
+
+# Create the image template
+New-AzResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile $jsonFilePath -api-version "2024-02-01" -imageTemplateName $imageTemplateName -svclocation $location
+
 
 
 

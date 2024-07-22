@@ -1,0 +1,79 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "imageTemplateName": {
+      "type": "string"
+    },
+    "api-version": {
+      "type": "string"
+    },
+    "svclocation": {
+      "type": "string"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "name": "[parameters('imageTemplateName')]",
+      "type": "Microsoft.VirtualMachineImages/imageTemplates",
+      "apiVersion": "[parameters('api-version')]",
+      "location": "[parameters('svclocation')]",
+      "dependsOn": [],
+      "tags": {
+        "imagebuilderTemplate": "win11pro",
+        "userIdentity": "enabled"
+      },
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "<imgBuilderId>": {}
+        }
+      },
+      "properties": {
+        "buildTimeoutInMinutes": 30,
+        "vmProfile": {
+          "vmSize": "Standard_D2_v3",
+          "osDiskSizeGB": "256"
+        },
+        "source": {
+          "type": "PlatformImage",
+          "publisher": "MicrosoftWindowsDesktop",
+          "offer": "Windows-11",
+          "sku": "21H2",
+          "version": "latest"
+        },
+        "customize": [
+          {
+            "type": "PowerShell",
+            "name": "InstallVSCode",
+            "inline": [
+              "Invoke-WebRequest -Uri 'https://aka.ms/win32-x64-user-stable' -OutFile 'C:\\temp\\vscode-installer.exe'",
+              "Start-Process -FilePath 'C:\\temp\\vscode-installer.exe' -ArgumentList '/silent', '/norestart' -Wait"
+            ]
+          }
+        ],
+        "distribute": [
+          {
+            "type": "ManagedImage",
+            "imageId": "/subscriptions/11af7924-8349-4e1b-a691-d374856ceb57/resourceGroups/rg-testagain-220724111/providers/Microsoft.Compute/images/imageWin11220724",
+            "location": "UKSouth",
+            "runOutputName": "windows-11",
+            "artifactTags": {
+              "source": "azVmImageBuilder",
+              "baseosimg": "windows11Pro"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
+
+
+
+
+
+
+
+

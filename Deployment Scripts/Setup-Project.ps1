@@ -23,7 +23,6 @@ $YAMLObject.ProjectID = $ProjectID
 
 #Convert the updated object back to YAML
 $UpdatedYAMLContent = ConvertTo-Yaml -Data $YAMLObject
-
 # Write the updated YAML back to the file
 $UpdatedYAMLContent | Out-File -FilePath $YAMLPath
 

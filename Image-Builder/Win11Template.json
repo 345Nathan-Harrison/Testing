@@ -1,47 +1,71 @@
 {
-    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-      "imageTemplateName": {
-        "type": "string"
-      },
-      "location": {
-        "type": "string"
-      }
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "imageTemplateName": {
+      "type": "string"
     },
-    "variables": {},
-    "resources": [
-      {
-        "name": "[parameters('imageTemplateName')]",
-        "type": "Microsoft.VirtualMachineImages/imageTemplates",
-        "apiVersion": "2020-02-14",
-        "location": "[parameters('location')]",
-        "properties": {
-          "buildTimeoutInMinutes": 30,
-          "vmProfile": {
-            "vmSize": "<VMSIZE>",
-            "osDiskSizeGB": "<OSDISKSIZE>"
-          },
-          "source": {
-            "type": "PlatformImage",
-            "publisher": "MicrosoftWindowsDesktop",
-            "offer": "Windows-11",
-            "sku": "<SKU>",
-            "version": "latest"
-          },
-          "customize": [],
-          "distribute": [
-            {
-              "type": "ManagedImage",
-              "location": "[parameters('location')]"
-            }
-          ]
+    "api-version": {
+      "type": "string"
+    },
+    "svclocation": {
+      "type": "string"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "name": "[parameters('imageTemplateName')]",
+      "type": "Microsoft.VirtualMachineImages/imageTemplates",
+      "apiVersion": "[parameters('api-version')]",
+      "location": "[parameters('svclocation')]",
+      "dependsOn": [],
+      "tags": {
+        "imagebuilderTemplate": "win11pro",
+        "userIdentity": "enabled"
+      },
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "<imgBuilderId>": {}
         }
+      },
+      "properties": {
+        "buildTimeoutInMinutes": 30,
+        "vmProfile": {
+          "vmSize": "<VMSIZE>",
+          "osDiskSizeGB": "<OSDISKSIZEGB>"
+        },
+        "source": {
+          "type": "PlatformImage",
+          "publisher": "MicrosoftWindowsDesktop",
+          "offer": "Windows-11",
+          "sku": "<SKU>",
+          "version": "latest"
+        },
+        "customize": [
+          {
+            "type": "PowerShell",
+            "name": "InstallVSCode",
+            "inline": [
+              "Invoke-WebRequest -Uri 'https://aka.ms/win32-x64-user-stable' -OutFile 'C:\\temp\\vscode-installer.exe'",
+              "Start-Process -FilePath 'C:\\temp\\vscode-installer.exe' -ArgumentList '/silent', '/norestart' -Wait"
+            ]
+          }
+        ],
+        "distribute": [
+          {
+            "type": "ManagedImage",
+            "imageId": "/subscriptions/<SUBSCRIPTIONID>/resourceGroups/<RESOURCEGROUPNAME>/providers/Microsoft.Compute/images/<IMAGENAME>",
+            "location": "<LOCATION>",
+            "runOutputName": "<RUNOUTPUTNAME>",
+            "artifactTags": {
+              "source": "azVmImageBuilder",
+              "baseosimg": "windows11Pro"
+            }
+          }
+        ]
       }
-    ]
-  }
-
-
-
-
-
+    }
+  ]
+}

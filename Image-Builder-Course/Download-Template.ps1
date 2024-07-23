@@ -4,7 +4,7 @@ $Win10FileName = "Win10MultiTemplate.json"
 
 # Test to see if the path exists. Create it if not.
 if ((test-path .\Template) -eq $false) {
-    New-Item -ItemType Directory -name 'Template'
+    new-item -ItemType Directory -name 'Template'
 }
 
 
@@ -22,7 +22,7 @@ if ((test-path .\Template\$Win10FileName) -eq $true) {
 # setup the variables
 # the first four need to match Enable-Idenity.ps1 script
 # destination image resource group
-$imageResourceGroup = 'aib-testing-rg'
+$imageResourceGroup = 'rg-devbox230724-testing'
 $location = (Get-AzResourceGroup -Name $imageResourceGroup).Location
 # Get your current subscription
 $subscriptionID = (Get-AzContext).Subscription.Id

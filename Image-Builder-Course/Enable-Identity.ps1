@@ -1,6 +1,6 @@
 # Set variables for the commands
 # Destination image resource group name
-$imageResourceGroup = 'aib-testing-rg'
+$imageResourceGroup = Read-Host -Prompt 'Enter the name of the image resource group'
 # Azure region
 $location = 'UKSouth'
 #Get the subscription ID
@@ -20,13 +20,11 @@ $imageRoleDefName = "Azure Image Builder Image Def $timeInt"
 $identityName = "myIdentity$timeInt"
 
 # Create the user identity
-New-AzUserAssignedIdentity -ResourceGroupName $imageResourceGroup -Name $identityName
+New-AzUserAssignedIdentity -ResourceGroupName $imageResourceGroup -Name $identityName -Location $location
 
 # Assign the identity resource and principle ID's to a variable
 $identityNamePrincipalID = (Get-AzUserAssignedIdentity -ResourceGroupName $imageResourceGroup -Name $identityName).PrincipalId
 
-# Create the role definition
-New-AzRoleDefinition -InputFile $myRoleImageCreationPath
 
 # Grant the role definition to the image builder service principle
 # Assign permissions for identity to distribute images

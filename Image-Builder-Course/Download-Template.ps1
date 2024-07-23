@@ -27,9 +27,9 @@ $location = (Get-AzResourceGroup -Name $imageResourceGroup).Location
 # Get your current subscription
 $subscriptionID = (Get-AzContext).Subscription.Id
 # name of the image to be created
-$imageName = 'aibCustomImageWin10'
+$imageName = 'devboxCustomImageWin10'
 # image template name
-$imageTemplateName = 'imageTemplateWin10Multi'
+$imageTemplateName = 'imageTemplateWin10DevBox'
 # distribution properties object name (runOutput), i.e. this gives you the properties of the managed image on completion
 $runOutputName = 'Win10Client'
 # Set the Template File Path
@@ -62,50 +62,11 @@ Get-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupN
 Start-AzImageBuilderTemplate -ResourceGroupName $imageResourceGroup -ImageTemplateName $imageTemplateName
 
 
+# create a vm to test
+$Cred = Get-Credential 
+$ArtifactId = (Get-AzImageBuilderTemplateRunOutput -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup).ArtifactId
+New-AzVM -ResourceGroupName $imageResourceGroup -Image $ArtifactId -Name myWinVM01 -Credential $Cred
 
-
-
-
-# # create a vm to test
-# # the below code will be replaced with Dev Box code instead of VM
-
-# ##Errors here - to be looked at Friday
-# # Get credentials at the start
-# $Cred = Get-Credential
-
-# # Retrieve the template and artifact ID
-# $template = Get-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup
-# $ArtifactId = $template.Name
-
-# # Get the custom image object
-# $image = Get-AzImage -ImageName $ArtifactId -ResourceGroupName $imageResourceGroup
-
-# # Specify the VM configuration
-# $vmName = "aibTestVM"
-# $vmLocation = $image.Location
-# $vmSize = "Standard_D2s_v3"
-
-# New-AzVM -ResourceGroupName $imageResourceGroup -Name $vmName -Location $vmLocation -Image $image -Size $vmSize -Credential $Cred
-
-
-# CREATE A DEV BOX
-
-$Cred = Get-Credential
-
-# Retrieve the template and artifact ID
-$template = Get-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup
-$ArtifactId = $template.Name
-
-# Get the custom image object
-$image = Get-AzImage -ImageName $ArtifactId -ResourceGroupName $imageResourceGroup
-
-# Specify the dev box defintion configuration
-$devBoxDefinitionName = "aibDevBoxDefinition"
-$galleryImageId = $image.Id
-$devBoxSize = "Standard_D2s_v3" 
-
-# Create the dev box definition with the custom image
-New-AzDevBoxDefinition -Name $devBoxDefinitionName -DevCenterName "devcenter-testing" -ProjectName "testing-project" -GalleryImageId $galleryImageId -Sku $devBoxSize -Credential $Cred
 
 
 

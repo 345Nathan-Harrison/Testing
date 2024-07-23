@@ -27,7 +27,7 @@
        "identity": {
          "type": "UserAssigned",
          "userAssignedIdentities": {
-          "<imgBuilderId>": {}
+          "/subscriptions/11af7924-8349-4e1b-a691-d374856ceb57/resourcegroups/imagebuilder-devbox-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/aibIdentity1721740503": {}
          }
        },
        "properties": {
@@ -57,15 +57,15 @@
           [
              {   
                 "type": "SharedImage",
-                "galleryImageId": "/subscriptions/<subscriptionID>/resourceGroups/<rgName>/providers/Microsoft.Compute/galleries/<sharedImageGalName>/images/<imageDefName>",
-                "runOutputName": "<runOutputName>",
+                "galleryImageId": "/subscriptions/11af7924-8349-4e1b-a691-d374856ceb57/resourceGroups/imagebuilder-devbox-rg/providers/Microsoft.Compute/galleries/devboxGallery/images/vscodeImageDef",
+                "runOutputName": "aibCustWinManImg01",
                 "artifactTags": {
                    "source": "azureVmImageBuilder",
                    "baseosimg": "win11multi"
                 },
                 "replicationRegions": [
-                  "<region1>",
-                  "<region2>"
+                  "uksouth",
+                  "ukwest"
                 ]
              }
           ]
@@ -73,3 +73,10 @@
       }
     ]
    }
+
+
+
+
+
+
+

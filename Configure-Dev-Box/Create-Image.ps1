@@ -76,7 +76,8 @@ New-AzGalleryImageDefinition -GalleryName $galleryName -ResourceGroupName $image
 
 # Configure the image template
 
-$templateFilePath = "C:\dev\Dev Box\Testing\Configure-Dev-Box\mytemplate.json" # change this to the path of your template file
+
+$templateFilePath = "C:\dev\Dev Box\Testing\mytemplate.json" # change this to the path of your template file
 
 (Get-Content -path $templateFilePath -Raw ) -replace '<subscriptionID>',$subscriptionID | Set-Content -Path $templateFilePath 
 (Get-Content -path $templateFilePath -Raw ) -replace '<rgName>',$imageResourceGroup | Set-Content -Path $templateFilePath 
@@ -89,6 +90,11 @@ $templateFilePath = "C:\dev\Dev Box\Testing\Configure-Dev-Box\mytemplate.json" #
 
 
 # submit your template to the service
-New-AzResourceGroupDeployment  -ResourceGroupName $imageResourceGroup  -TemplateFile $templateFilePath
+# the following command downloads any dependant artifacts, such as scripts, and stores them in the staging resource group (prefixed with IT_)
+New-AzResourceGroupDeployment  -ResourceGroupName $imageResourceGroup  -TemplateFile $templateFilePath -Api-Version "2020-02-14"  -imageTemplateName $imageTemplateName  -svclocation $location
 
+# build the image by invoking the Run command on the template
+Invoke-AzResourceAction -ResourceName $imageTemplateName -ResourceGroupName $imageResourceGroup -ResourceType Microsoft.VirtualMachineImages/imageTemplates -ApiVersion "2020-02-14" -Action Run 
 
+# get information about the newly built image, including the run status and provisioning state
+Get-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup | Select-Object -Property Name, LastRunStatusRunState, LastRunStatusMessage, ProvisioningState

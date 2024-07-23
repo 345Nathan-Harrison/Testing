@@ -27,20 +27,20 @@
       "identity": {
         "type": "UserAssigned",
         "userAssignedIdentities": {
-          "<imgBuilderId>": {}
+          "5ae1b12a-a216-49d3-b33f-bde6ec099624": {}
         }
       },
       "properties": {
         "buildTimeoutInMinutes": 30,
         "vmProfile": {
-          "vmSize": "Standard_D2_v3",
-          "osDiskSizeGB": "256"
+          "vmSize": "",
+          "osDiskSizeGB": ""
         },
         "source": {
           "type": "PlatformImage",
           "publisher": "MicrosoftWindowsDesktop",
           "offer": "Windows-11",
-          "sku": "21H2",
+          "sku": "",
           "version": "latest"
         },
         "customize": [
@@ -56,9 +56,9 @@
         "distribute": [
           {
             "type": "ManagedImage",
-            "imageId": "/subscriptions/11af7924-8349-4e1b-a691-d374856ceb57/resourceGroups/rg-testagain-220724111/providers/Microsoft.Compute/images/imageWin11220724",
+            "imageId": "/subscriptions/11af7924-8349-4e1b-a691-d374856ceb57/resourceGroups/rg-testafternoonfordevbox2024/providers/Microsoft.Compute/images/",
             "location": "UKSouth",
-            "runOutputName": "windows-11",
+            "runOutputName": "",
             "artifactTags": {
               "source": "azVmImageBuilder",
               "baseosimg": "windows11Pro"
@@ -69,6 +69,7 @@
     }
   ]
 }
+
 
 
 

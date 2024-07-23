@@ -84,11 +84,71 @@ $jsonFilePath = "C:\dev\Dev Box\Testing\Image-Builder\Template\$jsonFileName"
 ((Get-Content -path $jsonFilePath -Raw) -replace '<IMAGENAME>', $imageName) | Set-Content -Path $jsonFilePath
 ((Get-Content -path $jsonFilePath -Raw) -replace '<IMAGETEMPLATENAME>', $imageTemplateName) | Set-Content -Path $jsonFilePath
 ((Get-Content -path $jsonFilePath -Raw) -replace '<RUNOUTPUTNAME>', $runOutputName) | Set-Content -Path $jsonFilePath
+((Get-Content -path $jsonFilePath -Raw) -replace '<imgBuilderId>', $identityNamePrincipalID) | Set-Content -Path $jsonFilePath
+
+
+
+
+
+
+
+
+
+
+# SORT MANAGED IDENTITY
+
+# Create the managed identity
+# Use current time to verify names are unique
+[int]$timeInt = $(Get-date -UFormat '%s')
+$imageRoleDefName = "Azure Image Builder Image Def $timeInt"
+$identityName = "myIdentity$timeInt"
+
+New-AzUserAssignedIdentity -ResourceGroupName $resourceGroupName -Name $identityName 
+$identityNamePrincipalID = (Get-AzUserAssignedIdentity -ResourceGroupName $resourceGroupName -Name $identityName).PrincipalId
+
+# Grant the role definition to the image builder service principle
+# Assign permissions for identity to distribute images
+# downloads a .json file with settings, update with subscription settings
+$myRoleImageCreationUrl = 'https://raw.githubusercontent.com/345Nathan-Harrison/Testing/main/Image-Builder/AIBRoleImageCreator.json'
+$myRoleImageCreationPath = "C:\dev\Dev Box\Testing\Image-Builder\myRoleImageCreation.json"
+
+#Download the file
+Invoke-WebRequest -Uri $myRoleImageCreationUrl -OutFile $myRoleImageCreationPath -UseBasicParsing
+
+
+
+# Update the file
+$Content = Get-Content -Path $myRoleImageCreationPath -Raw
+$Content = $Content -replace '<subscriptionID>', $subscriptionID
+$Content = $Content -replace '<rgName>', $resourceGroupName
+$Content = $Content -replace 'Azure Image Builder Service Image Creation Role', $imageRoleDefName
+$Content | Out-File -FilePath $myRoleImageCreationPath -Force
+
+New-AzRoleDefinition -InputFile $myRoleImageCreationPath
+
+# Grant the role definition to the image builder service principle
+$RoleAssignParams = @{
+    ObjectId = $identityNamePrincipalID
+    RoleDefinitionName = $imageRoleDefName
+    Scope = "/subscriptions/$subscriptionID/resourceGroups/$resourceGroupName"
+}
+New-AzRoleAssignment @RoleAssignParams
+
+# Verify role assignment
+Get-AzRoleAssignment -ObjectId $identityNamePrincipalID | Select-Object DisplayName, RoleDefinitionName
+
+
+
 
 
 # Create the image template
 New-AzResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile $jsonFilePath -api-version "2024-02-01" -imageTemplateName $imageTemplateName -svclocation $location
-
+New-AzResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile $jsonFilePath -TemplateParameterObject @{
+    "imageTemplateName" = $imageTemplateName;
+    "location" = $location;
+    "api-version" = "2024-02-01";
+    "svclocation" = $location;
+}
 
 
 

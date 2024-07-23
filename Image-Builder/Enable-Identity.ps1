@@ -31,7 +31,7 @@ New-AzRoleDefinition -InputFile $myRoleImageCreationPath
 # Grant the role definition to the image builder service principle
 # Assign permissions for identity to distribute images
 # downloads a .json file with settings, update with subscription settings
-$myRoleImageCreationUrl = 'https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/solutions/12_Creating_AIB_Security_Roles/aibRoleImageCreation.json'
+$myRoleImageCreationUrl = 'https://raw.githubusercontent.com/345Nathan-Harrison/Testing/main/Image-Builder/AIBRoleImageCreator.json'
 $myRoleImageCreationPath = ".\myRoleImageCreation.json"
 #Download the file
 Invoke-WebRequest -Uri $myRoleImageCreationUrl -OutFile $myRoleImageCreationPath -UseBasicParsing

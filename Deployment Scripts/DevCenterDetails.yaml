@@ -1,8 +1,0 @@
-ResourceGroupID: /subscriptions/11af7924-8349-4e1b-a691-d374856ceb57/resourceGroups/azure-devbox-rg
-DevCenterID: /subscriptions/11af7924-8349-4e1b-a691-d374856ceb57/resourceGroups/azure-devbox-rg/providers/Microsoft.DevCenter/devcenters/DevCenter-20240719155709
-DevCenterName: DevCenter-20240719155709
-ProjectName: Project-ASDA-DevBox
-Location: UKSouth
-ProjectID: /subscriptions/11af7924-8349-4e1b-a691-d374856ceb57/resourceGroups/azure-devbox-rg/providers/Microsoft.DevCenter/projects/Project-ASDA-DevBox
-ResourceGroupName: azure-devbox-rg
-

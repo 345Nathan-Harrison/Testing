@@ -1,5 +1,5 @@
 {
-    "Name": "Azure Image Builder Image Def1721740503",
+    "Name": "Azure Image Builder Image Def1721896969",
     "IsCustom": true,
     "Description": "Image Builder access to create resources for the image build, you should delete or split out as appropriate",
     "Actions": [
@@ -16,7 +16,7 @@
   
     ],
     "AssignableScopes": [
-      "/subscriptions/11af7924-8349-4e1b-a691-d374856ceb57/resourceGroups/imagebuilder-devbox-rg"
+      "/subscriptions/11af7924-8349-4e1b-a691-d374856ceb57/resourceGroups/rg-devboxpoc-nonprod-uksouth-001"
     ]
   }
 

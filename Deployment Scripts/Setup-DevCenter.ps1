@@ -5,9 +5,11 @@
 
 # set up variables for dev center
 $timestamp = Get-Date -Format "yyyyMMddHHmmss"
-$DevCenterName = "DevCenter-$timestamp"
-$ResourceGroupName = "azure-devbox-rg"
-$Location = "UKSouth"
+$UniqueDevCenterName = "DevCenter-$timestamp"
+# dev center name must be between 3 and 26 characters and has to be unique within Azure
+$DevCenterName = "devcenter-devboxpoc"
+$ResourceGroupName = "rg-devboxpoc-nonprod-uksouth-001"
+$Location = "uksouth"
 
 # Create the resource group
 # Attempt to create a new resource group with verbose output
@@ -25,6 +27,19 @@ $ResourceGroupID = (Get-AzResourceGroup -Name $ResourceGroupName).ResourceId
 $DevCenter = New-AzDevCenterAdminDevCenter -Name $DevCenterName -ResourceGroupName $ResourceGroupName -Location $Location
 
 $DevCenterID = (Get-AzDevCenterAdminDevCenter -Name $DevCenterName -ResourceGroupName $ResourceGroupName).Id
+
+
+
+
+
+# Add a catalog to the dev center
+
+$catalogName = "catalog"
+# New-AzDevCenterAdminCatalog
+
+
+
+
 
 # Prepare the object to be converted to YAML
 $YAMLObject = @{

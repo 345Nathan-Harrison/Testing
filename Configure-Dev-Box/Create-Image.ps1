@@ -1,3 +1,8 @@
+# This PowerShell script creates a custom image using Azure Image Builder
+# Make sure you have run the Prerequisites script before running this script
+
+
+
 # Create variables to store information to use more than once
 
 # get existing context
@@ -7,7 +12,7 @@ $currentAzContext = Get-AzContext
 $subscriptionID = $currentAzContext.Subscription.Id
 
 # destination image resource group
-$imageResourceGroup = "imagebuilder-devbox-rg"
+$imageResourceGroup = "rg-devboxpoc-nonprod-uksouth-001"
 
 # location
 $location = "uksouth"
@@ -16,7 +21,9 @@ $location = "uksouth"
 $runOutputName = "aibCustWinManImg01"
 
 # image template name
-$imageTemplateName = "vscodeWinTemplate"
+$imageTemplateName = "vscodewintemplate-devboxpoc-nonprod-uksouth-001"
+
+
 
 
 # create a user assigned identity and set permissions on the resource group
@@ -31,7 +38,6 @@ New-AzUserAssignedIdentity -ResourceGroupName $imageResourceGroup -Name $identit
 
 $identityNameResourceID = $(Get-AzUserAssignedIdentity -ResourceGroupName $imageResourceGroup -Name $identityName).Id
 $identityNamePrincipalID = $(Get-AzUserAssignedIdentity -ResourceGroupName $imageResourceGroup -Name $identityName).PrincipalId
-
 
 # assign permissions for the identity to distribute the images
 # download an Azure role definition template and then update it with the required permissions
@@ -52,17 +58,19 @@ New-AzRoleAssignment -ObjectId $identityNamePrincipalId -RoleDefinitionName $ima
 
 
 
+
 # Create a Gallery
-# gallery name
-$galleryName = "devboxGallery"
+
+# gallery name (must only contain letters, numbers, periods, and underscores)
+$galleryName = "gallerydevboxpoc"
 
 # image definition name
-$imageDefinitionName = "vscodeImageDef"
+$imageDefinitionName = "def-vscodewin01-devboxpoc-nonprod-uksouth-001"
 
 # additional replication region
 $replicationRegion = "ukwest"
 
-# create the gallery
+# create the gallery 
 New-AzGallery -GalleryName $galleryName -ResourceGroupName $imageResourceGroup -Location $location
 
 $SecurityType = @{Name = 'SecurityType'; Value = 'TrustedLaunch'}
@@ -76,7 +84,6 @@ New-AzGalleryImageDefinition -GalleryName $galleryName -ResourceGroupName $image
 
 # Configure the image template
 
-
 $templateFilePath = "C:\dev\Dev Box\Testing\mytemplate.json" # change this to the path of your template file
 
 (Get-Content -path $templateFilePath -Raw ) -replace '<subscriptionID>',$subscriptionID | Set-Content -Path $templateFilePath 
@@ -89,7 +96,10 @@ $templateFilePath = "C:\dev\Dev Box\Testing\mytemplate.json" # change this to th
 ((Get-Content -path $templateFilePath -Raw) -replace '<imgBuilderId>',$identityNameResourceID) | Set-Content -Path $templateFilePath
 
 
+
+
 # submit your template to the service
+
 # the following command downloads any dependant artifacts, such as scripts, and stores them in the staging resource group (prefixed with IT_)
 New-AzResourceGroupDeployment  -ResourceGroupName $imageResourceGroup  -TemplateFile $templateFilePath -Api-Version "2020-02-14"  -imageTemplateName $imageTemplateName  -svclocation $location
 

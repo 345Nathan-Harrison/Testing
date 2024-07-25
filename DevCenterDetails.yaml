@@ -1,0 +1,8 @@
+ProjectID: /subscriptions/11af7924-8349-4e1b-a691-d374856ceb57/resourceGroups/rg-devboxpoc-nonprod-uksouth-001/providers/Microsoft.DevCenter/projects/proj-devboxpoc-nonprod-uksouth-001
+ProjectName: proj-devboxpoc-nonprod-uksouth-001
+DevCenterID: /subscriptions/11af7924-8349-4e1b-a691-d374856ceb57/resourceGroups/rg-devboxpoc-nonprod-uksouth-001/providers/Microsoft.DevCenter/devcenters/devcenter-devboxpoc
+ResourceGroupID: /subscriptions/11af7924-8349-4e1b-a691-d374856ceb57/resourceGroups/rg-devboxpoc-nonprod-uksouth-001
+ResourceGroupName: rg-devboxpoc-nonprod-uksouth-001
+DevCenterName: devcenter-devboxpoc
+Location: uksouth
+

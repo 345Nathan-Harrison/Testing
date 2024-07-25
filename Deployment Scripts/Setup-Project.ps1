@@ -12,7 +12,7 @@ $ResourceGroupName = $YAMLObject.ResourceGroupName
 $Location = $YAMLObject.Location
 
 # Create a Project in the Dev Center
-$ProjectName = "Project-ASDA-DevBox"
+$ProjectName = "proj-devboxpoc-nonprod-uksouth-001"
 $Project = New-AzDevCenterAdminProject -Name $ProjectName -DevCenterId $DevCenterID -ResourceGroupName $ResourceGroupName -Location $Location
 # obtain a project ID
 $ProjectID = (Get-AzDevCenterAdminProject -Name $ProjectName -ResourceGroupName $ResourceGroupName).Id

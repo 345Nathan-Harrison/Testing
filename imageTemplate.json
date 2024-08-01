@@ -21,7 +21,7 @@
       "location": "[parameters('svclocation')]",
       "dependsOn": [],
       "tags": {
-        "imagebuilderTemplate": "win11multi",
+        "imagebuilderTemplate": "win10multi",
         "userIdentity": "enabled"
       },
       "identity": {
@@ -39,8 +39,8 @@
       "source": {
          "type": "PlatformImage",
          "publisher": "MicrosoftWindowsDesktop",
-         "offer": "Windows-11",
-         "sku": "win11-21h2-ent",
+         "offer": "Windows-10",
+         "sku": "win10-22h2-ent",
          "version": "latest"
       },
         "customize": [
@@ -61,7 +61,7 @@
                "runOutputName": "<runOutputName>",
                "artifactTags": {
                   "source": "azureVmImageBuilder",
-                  "baseosimg": "win11multi"
+                  "baseosimg": "win10multi"
                },
                "replicationRegions": [
                  "<region1>",

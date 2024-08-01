@@ -34,7 +34,8 @@
         "buildTimeoutInMinutes": 100,
         "vmProfile": {
          "vmSize": "Standard_DS2_v2",
-         "osDiskSizeGB": 127
+         "osDiskSizeGB": 127,
+         "hyperVGeneration": "V2"
         },
       "source": {
          "type": "PlatformImage",
